@@ -1,0 +1,31 @@
+cd /home/tim/Dokumente/gopath/src/github.com/tim-lebedkov/npackdweb
+go run main.go
+chmod u+x deploy.sh
+./deploy.sh
+scp ./npackdweb root@207.154.234.78:/var/www/
+ssh root@207.154.234.78
+sudo apt-get update
+sudo apt-get install nginx
+sudo ufw allow 'Nginx HTTP'
+sudo apt-get update
+sudo apt-get install software-properties-common
+sudo add-apt-repository universe
+sudo add-apt-repository ppa:certbot/certbot
+sudo apt-get update
+sudo apt-get install certbot python-certbot-nginx
+sudo certbot --nginx
+vim /etc/systemd/system/npackdweb.service
+sudo systemctl start npackdweb
+vim /etc/nginx/sites-enabled/npackd.org
+systemctl restart nginx
+sudo apt install mysql-server
+sudo systemctl status mysql
+sudo mysql_secure_installation
+sudo mysql
+create database npackd;
+use npackd
+CREATE USER 'npackd'@'localhost' IDENTIFIED BY 'mypassword';
+GRANT ALL PRIVILEGES ON npackd . * TO 'npackd'@'localhost';
+FLUSH PRIVILEGES;
+create table test(id int(6), txt varchar(30));
+
