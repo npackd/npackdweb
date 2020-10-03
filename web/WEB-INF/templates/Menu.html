@@ -1,0 +1,68 @@
+<nav class="navbar navbar-default" role="navigation">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header" style="background-image: url(/Logo32.png); background-position-y: center; background-repeat: no-repeat; padding-left: 50px">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">Npackd</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/p">Packages</a></li>
+        <li><a href="/rep">Repositories</a></li>
+        <li><a href="/stars">Your stars</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">More <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a href="https://github.com/tim-lebedkov/npackd/wiki">Docs*</a></li>
+            <li><a href="https://github.com/tim-lebedkov">Source code*</a></li>
+            <li><a href="https://github.com/tim-lebedkov/npackd/issues">Issues*</a></li>
+            <li><a href="https://groups.google.com/forum/#!forum/npackd">Forum*</a></li>            
+            <li class="divider"></li>
+            <li><a href="/rep/from-file">Upload from a file</a></li>
+            <li><a href="/rep/edit-as-xml">Upload as text</a></li>
+            <li><a href="/package/new">Create new package</a></li>
+            <li><a href="/l">Licenses</a></li>
+            <li class="divider"></li>
+            <li><a href="/pv?tag=untested">List of untested versions</a></li>
+            <li><a href="/pv?tag=not-reviewed">List of not reviewed versions</a></li>
+            <li><a href="/pv?tag=phishing">List of package versions with the tag &quot;phishing&quot</a></li>
+            <li><a href="/pv?tag=malware">List of package versions with the tag &quot;malware&quot</a></li>
+            <li><a href="/pv?tag=unwanted">List of package versions with the tag &quot;unwanted&quot</a></li>
+<#if admin??>
+            <li class="divider"></li>
+            <li><a href="/add-repository">Add repository</a></li>
+            <li><a href="/info">Show registered actions</a></li>
+            <li><a href="/process-packages">Process all packages</a></li>
+            <li><a href="/clean-dependencies">Process all package versions</a></li>
+<li><a href="/_ah/pipeline/list">MapReduce root pipelines</a></li>          
+</#if>
+          </ul>
+        </li>
+      </ul>
+
+<#if searchForm??>
+      <form class="navbar-form navbar-left" role="search" action="/p">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search" name="q">
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </form>
+</#if>
+
+
+<span class="navbar-right" style="margin-top: 10px; margin-left: 10px"><a href="https://github.com/tim-lebedkov/npackd-cpp/releases" class="btn btn-success btn-md" role="button">
+<span class="glyphicon glyphicon-download"></span> 
+Download Npackd</a></span>
+
+ 	  <p class="navbar-text navbar-right">${login}</p>
+
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>

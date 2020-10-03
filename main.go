@@ -283,6 +283,9 @@ func prog() error {
 	}
 	*/
 
+	fs := http.FileServer(http.Dir("./web"))
+	http.Handle("/", fs)
+
 	http.HandleFunc("/api", handleFunc)
 	log.Println("Starting the server on :", 3001)
 
