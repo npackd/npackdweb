@@ -1,8 +1,5 @@
-cd /home/tim/Dokumente/gopath/src/github.com/tim-lebedkov/npackdweb
-go run main.go
-chmod u+x deploy.sh
-./deploy.sh
-scp ./npackdweb root@207.154.234.78:/var/www/
+Installation
+============
 ssh root@207.154.234.78
 sudo apt-get update
 sudo apt-get install nginx
@@ -21,6 +18,9 @@ systemctl restart nginx
 sudo apt install mysql-server
 sudo systemctl status mysql
 sudo mysql_secure_installation
+
+MySQL configuration
+===================
 sudo mysql
 create database npackd;
 use npackd
@@ -29,3 +29,18 @@ GRANT ALL PRIVILEGES ON npackd . * TO 'npackd'@'localhost';
 FLUSH PRIVILEGES;
 create table test(id int(6), txt varchar(30));
 
+go get -u github.com/go-sql-driver/mysql
+
+Run
+===
+cd /home/tim/Dokumente/gopath/src/github.com/tim-lebedkov/npackdweb
+go run main.go
+
+Deploy
+======
+GOOS=linux GOARCH=amd64 go build
+scp ./npackdweb root@207.154.234.78:/var/www/
+
+Test
+====
+http://207.154.234.78:3001/api
