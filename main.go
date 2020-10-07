@@ -8,9 +8,15 @@ import (
 	"log"
 	"net/http"
 	"time"
+	"html/template"
 
 	_ "github.com/go-sql-driver/mysql"
 )
+
+var programSettings settings
+var staticFileHandler http.Handler
+var carouselTemplate *template.Template
+var menuTemplate *template.Template
 
 type settings struct {
 	DBPassword string `xml:"db-password"`
@@ -35,7 +41,40 @@ type Repository struct {
 	Package        []Package        `xml:"package"`
 }
 
-var programSettings settings
+// wie http.HandleFunc, aber mit der Rückgabe von "error"
+// Falls die Funktion einen Fehler zurückgibt, wird HTTP-Status 500 erzeugt
+func errHandleFunc(pattern string, handler func(http.ResponseWriter,
+	*http.Request) error) {
+	f := func(w http.ResponseWriter, r *http.Request) {
+/* TODO		if metaDatabaseId == 0 {
+			c := appengine.NewContext(r)
+
+			if requireLogin(w, r, c) {
+				err := createMetaDatabase(c)
+				if err != nil {
+					http.Error(w, "createMetaDatabase: " + err.Error(),
+						http.StatusInternalServerError)
+					return
+				}
+			} else {
+				return
+			}
+		}
+		*/
+		
+		//ctx, cancel = context.WithTimeout(context.Background(), timeout)
+		//defer cancel()
+
+		err := handler(w, r)
+		if err != nil {
+			//c := context.New().NewContext(r)
+			//log.Infof(c, err.Error())
+			print(err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	}
+	http.HandleFunc(pattern, f)
+}
 
 func parseRepository() (*Repository, error) {
 	// read Rep.xml
@@ -190,10 +229,20 @@ func updateDB() error {
 	return nil
 }
 
-func handleFunc(w http.ResponseWriter, r *http.Request) {
+func handleHomeFunc(w http.ResponseWriter, r *http.Request) error {
+	var err error
+	if r.URL.Path == "/" {
+		NewRootPage(nil, r, w).paint()
+	} else {
+		staticFileHandler.ServeHTTP(w, r)
+	}
+	return err
+}
+
+func handleFunc(w http.ResponseWriter, r *http.Request) error {
 	db, err := openDB()
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	defer db.Close()
@@ -202,7 +251,7 @@ func handleFunc(w http.ResponseWriter, r *http.Request) {
 	rows, err := db.Query("SELECT NAME, TITLE, DESCRIPTION FROM PACKAGE")
 	defer rows.Close()
 	if err != nil {
-		panic(err.Error()) // proper error handling instead of panic in your app
+		return err
 	}
 
 	// Get column names
@@ -251,7 +300,7 @@ func handleFunc(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "Name:", p.Name, "Title:", p.Title)
 	}
 
-	fmt.Fprintf(w, "Hello!")
+	return nil
 }
 
 func prog() error {
@@ -283,10 +332,14 @@ func prog() error {
 	}
 	*/
 
-	fs := http.FileServer(http.Dir("./web"))
-	http.Handle("/", fs)
+	carouselTemplate = template.Must(template.ParseFiles("./web/WEB-INF/templates/Carousel.html"))
+	menuTemplate = template.Must(template.ParseFiles("./web/WEB-INF/templates/Menu.html"))
 
-	http.HandleFunc("/api", handleFunc)
+	errHandleFunc("/", handleHomeFunc)
+
+	staticFileHandler = http.FileServer(http.Dir("./web"))
+
+	errHandleFunc("/api", handleFunc)
 	log.Println("Starting the server on :", 3001)
 
 	err = http.ListenAndServe(":3001", nil)

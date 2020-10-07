@@ -34,7 +34,7 @@ go get -u github.com/go-sql-driver/mysql
 Run
 ===
 cd /home/tim/Dokumente/gopath/src/github.com/tim-lebedkov/npackdweb
-go run main.go
+go run *.go
 
 Deploy
 ======
